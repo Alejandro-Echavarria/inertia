@@ -1,12 +1,66 @@
-<script setup>
+<script>
 import AppLayout from '@/Layouts/AppLayout.vue';
+import Pagination from '@/Components/Pagination.vue';
+import pickBy from 'lodash/pickBy';
 
-defineProps({
-    contacts: {
-        type: Object,
-        required: true,
+export default {
+    components: {
+        AppLayout,
+        Pagination,
+    },
+
+    data() {
+        return {
+            search: this.filter.search,
+        }
+    },
+
+    computed: {
+        debounceData() {
+            return this.debounce(this.contactsFilter, 500);
+        },
+    },
+
+    mounted() {
+        // crear una versión debounced de la función getBooks con un tiempo de espera de 500ms
+        this.debounceData = this.debounce(this.contactsFilter, 500);
+    },
+
+    watch: {
+        search() {
+            this.debounceData();
+        }
+    },
+
+    methods: {
+        contactsFilter() {
+            this.$inertia.get('/contacts', pickBy({ search: this.search, page: this.page }), { preserveState: true });
+        },
+
+        debounce(func, wait) {
+            let timeout;
+            return function () {
+                const context = this,
+                    args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    timeout = null;
+                    func.apply(context, args);
+                }, wait);
+            };
+        }
+    },
+
+    props: {
+        contacts: {
+            type: Object,
+            required: true,
+        },
+        filter: {
+            type: Object,
+        }
     }
-});
+}
 </script>
 
 <template>
@@ -30,14 +84,14 @@ defineProps({
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input type="text" id="table-search"
-                            class="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        <input v-model="search" type="text" id="table-search"
+                            class="block p-2 pl-10 text-sm text-gray-900 border-2 border-gray-300 rounded-lg w-80 bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Search for items">
                     </div>
                 </div>
-                <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+                <div class="relative overflow-x-auto md:border-2 sm:rounded-lg">
                     <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-                        <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                        <thead class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
                                 <th scope="col" class="px-6 py-3">
                                     Name
@@ -57,7 +111,8 @@ defineProps({
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="contact in contacts" :key="contact.id" class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                            <tr v-for="contact in contacts.data" :key="contact.id"
+                                class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
                                 <th scope="row"
                                     class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                     {{ contact.first_name }}
@@ -79,9 +134,11 @@ defineProps({
                         </tbody>
                     </table>
                 </div>
+                <Pagination :pagination="contacts" />
             </div>
         </div>
     </AppLayout>
 </template>
 
-<style scoped></style>
+<style scoped>
+</style>

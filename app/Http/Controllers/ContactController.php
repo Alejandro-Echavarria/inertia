@@ -6,6 +6,7 @@ use App\Models\Contact;
 use App\Http\Requests\StoreContactRequest;
 use App\Http\Requests\UpdateContactRequest;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
@@ -17,11 +18,15 @@ class ContactController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contacts = Contact::with(['organization'])->get();
+        $filter = $request->all('search');
 
-        return Inertia::render('Contacts/Index', compact('contacts'));
+        $contacts = Contact::with(['organization'])
+            ->filter($filter)
+            ->paginate(10);
+
+        return Inertia::render('Contacts/Index', compact('contacts', 'filter'));
     }
 
     /**
