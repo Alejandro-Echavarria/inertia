@@ -2,11 +2,13 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Pagination from '@/Components/Pagination.vue';
 import pickBy from 'lodash/pickBy';
+import { Link } from '@inertiajs/vue3';
 
 export default {
     components: {
         AppLayout,
         Pagination,
+        Link
     },
 
     data() {
@@ -66,14 +68,14 @@ export default {
 <template>
     <AppLayout title="Contacts">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 id="con" class="font-semibold text-xl text-gray-800 leading-tight">
                 Contacts
             </h2>
         </template>
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="pb-4">
+                <div class="pb-4 px-4 sm:px-0">
                     <label for="table-search" class="sr-only">Search</label>
                     <div class="relative mt-1">
                         <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -84,9 +86,12 @@ export default {
                                     clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        <input v-model="search" type="text" id="table-search"
-                            class="block p-2 pl-10 text-sm text-gray-900 border-2 border-gray-300 rounded-lg w-80 bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Search for items">
+                        <div class="flex items-center">
+                            <input v-model="search" type="text" id="table-search"
+                                class="flex-1 lock p-2 pl-10 py-2.5 px-0 text-sm text-gray-700 bg-transparent border-0 border-b-2 border-gray-200 appearance-none dark:text-gray-400 dark:border-gray-700 focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500 peer transition"
+                                placeholder="Search for items">
+                            <Link :href="route('contacts.create')" class="ml-4 flex-shrink-0 font-semibold text-blue-600 dark:text-blue-500 hover:underline">New</Link>
+                        </div>
                     </div>
                 </div>
                 <div class="relative overflow-x-auto md:border-2 sm:rounded-lg">
@@ -127,8 +132,8 @@ export default {
                                     {{ contact.phone }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <a href="#"
-                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+                                    <Link :href="route('contacts.edit', contact.id)"
+                                        class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</Link>
                                 </td>
                             </tr>
                         </tbody>
@@ -140,5 +145,4 @@ export default {
     </AppLayout>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
