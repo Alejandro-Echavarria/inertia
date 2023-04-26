@@ -13,6 +13,7 @@ export default {
             this.$inertia.visit(this.$inertia.page.url, {
                 replace: true,
                 preserveState: true,
+                preserveScroll: true,
                 data: {
                     page: page
                 }
@@ -23,10 +24,13 @@ export default {
 </script>
 
 <template>
-    <div class="flex items-center justify-between px-4 py-3 sm:px-6">
+    <div class="flex items-center justify-between px-4 py-3 sm:px-0">
         <div class="flex flex-1 justify-between sm:hidden">
-            <a href="#"
-                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+            <a 
+                href="#"
+                class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Previous
+            </a>
             <a href="#"
                 class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
         </div>
@@ -50,12 +54,13 @@ export default {
                             v-html="link.label">
                         </div>
 
-                        <a v-else :key="'links-' + index" 
-                            @click="changePage(link.url)" href="#"
-                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 focus:z-20"
+                        <a v-else :key="'links-' + index"
+                            @click="changePage(link.url)" href="#table-01"
+                            class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 focus:z-20 cursor-pointer"
                             :class="link.active
                                     ? 'z-10 border-b-2 border-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out'
-                                    : ''" v-html="link.label" />
+                                    : ''" v-html="link.label">
+                        </a>
                     </template>
                 </nav>
             </div>
