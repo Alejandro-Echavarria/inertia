@@ -1,4 +1,6 @@
 <script>
+import { Link } from '@inertiajs/vue3';
+
 export default {
     props: {
         pagination: {
@@ -6,10 +8,9 @@ export default {
             required: true
         }
     },
-
     methods: {
         changePage(url) {
-            const page = url.split('?page=')[1];
+            const page = url.split("?page=")[1];
             this.$inertia.visit(this.$inertia.page.url, {
                 replace: true,
                 preserveState: true,
@@ -19,7 +20,8 @@ export default {
                 }
             });
         }
-    }
+    },
+    components: { Link }
 }
 </script>
 
